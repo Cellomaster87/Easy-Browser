@@ -13,7 +13,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
     // MARK: - Properties
     var webView: WKWebView!
     var progressView: UIProgressView!
-    var websites = ["apple.com", "hackingwithswift.com", "wizards.dnd.com"]
+    var websites = ["apple.com", "hackingwithswift.com", "dnd.wizards.com"]
     
     // MARK: - Views Managment
     override func loadView() {
@@ -25,8 +25,10 @@ class ViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Open button
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
         
+        // Toolbar buttons setup
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
         
@@ -37,8 +39,10 @@ class ViewController: UIViewController, WKNavigationDelegate {
         toolbarItems = [progressButton, spacer, refresh]
         navigationController?.isToolbarHidden = false
         
+        // KVO setup
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
         
+        // Navigation management
         let url = URL(string: "https://" + websites[0])!
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
@@ -46,8 +50,10 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     // MARK: - Methods
     @objc func openTapped() {
+        // Alert Controller setup
         let alertController = UIAlertController(title: "Open page...", message: nil, preferredStyle: .actionSheet)
         
+        // Alert Action setup
         for website in websites {
             alertController.addAction(UIAlertAction(title: website, style: .default, handler: openPage))
         }
@@ -55,6 +61,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alertController.popoverPresentationController?.barButtonItem = self.navigationItem.rightBarButtonItem
         
+        // Alert presentation
         present(alertController, animated: true)
     }
     
@@ -88,6 +95,9 @@ class ViewController: UIViewController, WKNavigationDelegate {
             }
         }
         
+        let alertController = UIAlertController(title: "WARNING!", message: "This website is blocked!", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alertController, animated: true)
         decisionHandler(.cancel)
     }
 }
